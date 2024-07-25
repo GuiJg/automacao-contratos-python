@@ -77,54 +77,54 @@ const downloadContract = expressAsyncHandler(async (req, res) => {
     }
 });
 
-const uploadContract = expressAsyncHandler(async (req, res) => {
-    try {
-        const excelFile = req.file.path;
+// const uploadContract = expressAsyncHandler(async (req, res) => {
+//     try {
+//         const excelFile = req.file.path;
 
-        // Execute the Python script with the 'py' command
-        const pythonProcess = spawn('py', ['contrato.py', excelFile]);
+//         // Execute the Python script with the 'py' command
+//         const pythonProcess = spawn('py', ['contrato.py', excelFile]);
 
-        pythonProcess.on('exit', (code) => {
-            try {
-                if (code === 0) {
-                    const outputDir = 'contratos';
-                    const zipFile = 'contratos.zip';
+//         pythonProcess.on('exit', (code) => {
+//             try {
+//                 if (code === 0) {
+//                     const outputDir = 'contratos';
+//                     const zipFile = 'contratos.zip';
 
-                    const output = fs.createWriteStream(zipFile);
-                    const archive = archiver('zip', { zlib: { level: 9 } });
+//                     const output = fs.createWriteStream(zipFile);
+//                     const archive = archiver('zip', { zlib: { level: 9 } });
 
-                    output.on('close', () => {
-                        // Delete the output directory and files after creating the zip
-                        fs.rmSync(outputDir, { recursive: true, force: true });
+//                     output.on('close', () => {
+//                         // Delete the output directory and files after creating the zip
+//                         fs.rmSync(outputDir, { recursive: true, force: true });
 
-                        res.download(zipFile, (err) => {
-                            if (err) {
-                                console.error(err);
-                            }
-                            // Delete the zip file after download
-                            fs.unlinkSync(zipFile);
-                        });
-                    });
+//                         res.download(zipFile, (err) => {
+//                             if (err) {
+//                                 console.error(err);
+//                             }
+//                             // Delete the zip file after download
+//                             fs.unlinkSync(zipFile);
+//                         });
+//                     });
 
-                    archive.pipe(output);
-                    archive.directory(outputDir, false);
-                    archive.finalize();
-                } else {
-                    res.status(500).send('Erro ao gerar contratos');
-                }
-            } catch (error) {
-                console.error(`Erro ao processar o arquivo zip: ${error}`);
-                res.status(500).send("Erro interno do servidor");
-            }
-        });
-    } catch (error) {
-        console.error(`Erro ao processar a requisição: ${error}`);
-        res.status(500).send("Erro interno do servidor");
-    }
-});
+//                     archive.pipe(output);
+//                     archive.directory(outputDir, false);
+//                     archive.finalize();
+//                 } else {
+//                     res.status(500).send('Erro ao gerar contratos');
+//                 }
+//             } catch (error) {
+//                 console.error(`Erro ao processar o arquivo zip: ${error}`);
+//                 res.status(500).send("Erro interno do servidor");
+//             }
+//         });
+//     } catch (error) {
+//         console.error(`Erro ao processar a requisição: ${error}`);
+//         res.status(500).send("Erro interno do servidor");
+//     }
+// });
 
 module.exports = { 
     formContract, 
     downloadContract,
-    uploadContract 
+    // uploadContract 
 };
