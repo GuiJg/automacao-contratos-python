@@ -2,7 +2,7 @@ const { execSync } = require('child_process');
 
 try {
     // Install Python dependencies
-    execSync('py -m pip install -r requirements.txt', { stdio: 'inherit' });
+    execSync('pip install -r requirements.txt', { stdio: 'inherit' });
 } catch (err) {
     console.error('Erro ao instalar dependências Python:', err);
 }
