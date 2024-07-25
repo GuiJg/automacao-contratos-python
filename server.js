@@ -21,45 +21,9 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use('/api', formRoute);
 
-app.post('/upload', upload.single('file'), (req, res) => {
-    const excelFile = req.file.path;
-
-    // Execute the Python script with the 'py' command
-    const pythonProcess = spawn('py', ['contrato.py', excelFile]);
-
-    pythonProcess.on('exit', (code) => {
-        if (code === 0) {
-            const outputDir = 'contratos';
-            const zipFile = 'contratos.zip';
-
-            const output = fs.createWriteStream(zipFile);
-            const archive = archiver('zip', { zlib: { level: 9 } });
-
-            output.on('close', () => {
-                // Delete the output directory and files after creating the zip
-                fs.rmSync(outputDir, { recursive: true, force: true });
-
-                res.download(zipFile, (err) => {
-                    if (err) {
-                        console.error(err);
-                    }
-                    // Delete the zip file after download
-                    fs.unlinkSync(zipFile);
-                });
-            });
-
-            archive.pipe(output);
-            archive.directory(outputDir, false);
-            archive.finalize();
-        } else {
-            res.status(500).send('Erro ao gerar contratos');
-        }
-    });
-});
-
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(500).send('Something broke!');
+    res.status(500).send('Algo deu errado!');
 });
 
 mongoose.connect("mongodb+srv://admin:admin@admin-automa.cipxvr5.mongodb.net/Automacao?retryWrites=true&w=majority&appName=admin-automa")

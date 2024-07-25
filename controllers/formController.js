@@ -1,4 +1,5 @@
 const { spawn } = require('child_process');
+const archiver = require('archiver');
 const expressAsyncHandler = require('express-async-handler');
 const path = require('path');
 const fs = require('fs');
@@ -66,4 +67,44 @@ const downloadContract = expressAsyncHandler(async (req, res) => {
     });
 });
 
-module.exports = { formContract, downloadContract };
+const uploadContract = expressAsyncHandler(async (req, res) => {
+    const excelFile = req.file.path;
+
+    // Execute the Python script with the 'py' command
+    const pythonProcess = spawn('py', ['contrato.py', excelFile]);
+
+    pythonProcess.on('exit', (code) => {
+        if (code === 0) {
+            const outputDir = 'contratos';
+            const zipFile = 'contratos.zip';
+
+            const output = fs.createWriteStream(zipFile);
+            const archive = archiver('zip', { zlib: { level: 9 } });
+
+            output.on('close', () => {
+                // Delete the output directory and files after creating the zip
+                fs.rmSync(outputDir, { recursive: true, force: true });
+
+                res.download(zipFile, (err) => {
+                    if (err) {
+                        console.error(err);
+                    }
+                    // Delete the zip file after download
+                    fs.unlinkSync(zipFile);
+                });
+            });
+
+            archive.pipe(output);
+            archive.directory(outputDir, false);
+            archive.finalize();
+        } else {
+            res.status(500).send('Erro ao gerar contratos');
+        }
+    });
+});
+
+module.exports = { 
+    formContract, 
+    downloadContract,
+    uploadContract 
+};
