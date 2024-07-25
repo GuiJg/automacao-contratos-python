@@ -1,3 +1,12 @@
+const { execSync } = require('child_process');
+
+try {
+    // Install Python dependencies
+    execSync('py -m pip install -r requirements.txt', { stdio: 'inherit' });
+} catch (err) {
+    console.error('Erro ao instalar dependências Python:', err);
+}
+
 require('dotenv').config();
 const express = require('express');
 const app = express();
@@ -36,6 +45,6 @@ mongoose.connect("mongodb+srv://admin:admin@admin-automa.cipxvr5.mongodb.net/Aut
             res.send("Servidor Conectado");
         });
     })
-    .catch((err) => { 
+    .catch((err) => {
         console.log(err);
     });
