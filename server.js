@@ -36,6 +36,6 @@ mongoose.connect("mongodb+srv://admin:admin@admin-automa.cipxvr5.mongodb.net/Aut
             res.send("Servidor Conectado");
         });
     })
-    .catch((err) => {
+    .catch((err) => { 
         console.log(err);
     });
