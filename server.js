@@ -1,11 +1,11 @@
-const { execSync } = require('child_process');
+// const { execSync } = require('child_process');
 
-try {
-    // Install Python dependencies
-    execSync('pip install -r requirements.txt', { stdio: 'inherit' });
-} catch (err) {
-    console.error('Erro ao instalar dependências Python:', err);
-}
+// try {
+//     // Install Python dependencies
+//     execSync('pip install -r requirements.txt', { stdio: 'inherit' });
+// } catch (err) {
+//     console.error('Erro ao instalar dependências Python:', err);
+// }
 
 require('dotenv').config();
 const express = require('express');
